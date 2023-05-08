@@ -734,5 +734,8 @@ export default {
 .banner-bg__text-1{
   color: red !important;
 }
+.aspect__img{
+  object-fit: cover;
+}
 </style>
 

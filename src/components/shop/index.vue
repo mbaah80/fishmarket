@@ -1089,5 +1089,7 @@ export default {
 </script>
 
 <style scoped>
-
+.aspect__img{
+  object-fit: cover;
+}
 </style>
