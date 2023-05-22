@@ -51,20 +51,11 @@
               <div class="l-f-o__pad-box">
                 <h1 class="gl-h1">PERSONAL INFORMATION</h1>
                 <div class="l-f-o__form">
-                  <div class="gl-s-api">
-                    <div class="u-s-m-b-15">
-
-                      <button class="gl-s-api__btn gl-s-api__btn--fb" type="button"><i class="fab fa-facebook-f"></i>
-
-                        <span>Signup with Facebook</span></button></div>
-                    <div class="u-s-m-b-30">
-
-                      <button class="gl-s-api__btn gl-s-api__btn--gplus" type="button"><i class="fab fa-google"></i>
-
-                        <span>Signup with Google</span></button></div>
-                  </div>
+                 
                   <div class="u-s-m-b-30">
-
+                    <div class="error"  v-if="error">
+                      {{error}}
+                    </div>
                     <label class="gl-label" for="reg-fname">FIRST NAME *</label>
 
                     <input class="input-text input-text--primary-style" type="text" v-model="fname" id="reg-fname" placeholder="First Name"></div>
@@ -110,7 +101,8 @@ export default {
       fname: '',
       lname: '',
       email: '',
-      password: ''
+      password: '',
+      error:''
     }
   },
   methods: {
@@ -145,7 +137,11 @@ export default {
              this.$router.push('/shop')
            })
            .catch((error) => {
-             console.log(error)
+             if(error.message === 'The email address is already in use by another account.'){
+                this.error = 'The email address is already in use by another account.'
+              }else{
+                this.error = error.message
+              }
            })
      }
     }
@@ -154,5 +150,11 @@ export default {
 </script>
 
 <style scoped>
-
+.error{
+  background-color:rgb(160, 50, 50);
+  color:#fff;
+  padding:10px;
+  text-align: center;
+  margin-bottom: 20px;
+}
 </style>

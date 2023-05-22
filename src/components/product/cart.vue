@@ -159,7 +159,7 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-12 col-md-12 col-sm-12 u-s-m-b-30">
-            <form class="f-cart">
+            <form class="f-cart" @submit.prevent="checkOut" >
               <div class="row">
                 <div class="col-lg-4 col-md-6 u-s-m-b-30">
                   <div class="f-cart__pad-box">
@@ -242,7 +242,7 @@
                     </div>
                     <div>
 
-                      <button class="btn btn--e-brand-b-2" @click="checkOut"> PROCEED TO CHECKOUT</button></div>
+                      <router-link class="btn btn--e-brand-b-2" to="/product/checkout" > PROCEED TO CHECKOUT</router-link></div>
                   </div>
                 </div>
               </div>
@@ -258,6 +258,9 @@
 
 <script>
 import firebase from 'firebase/app'
+
+
+
 export default {
   name: "productDetail",
   data(){
@@ -346,7 +349,7 @@ export default {
       })
     },
     checkOut(){
-
+      this.$router.push('/product/checkout')
     }
   },
 

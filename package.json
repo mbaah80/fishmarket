@@ -10,6 +10,7 @@
     "@kyvg/vue3-notification": "^2.9.0",
     "firebase": "^8.2.6",
     "owl.carousel": "^2.3.4",
+    "paystack": "^2.0.1",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
     "vue-toasted": "^1.1.28"
