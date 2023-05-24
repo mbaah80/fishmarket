@@ -58,7 +58,7 @@
 
                       <span class="product-o__review">(23)</span></div>
 
-                    <span class="product-o__price">${{ product.price }}<span class="product-o__discount">(20% OFF)</span></span>
+                    <span class="product-o__price">{{currency}}{{ product.price }}<span class="product-o__discount">(20% OFF)</span></span>
                   </div>
                 </div>
               </div>
@@ -156,9 +156,9 @@
                   <div>
                     <div class="pd-detail__inline">
 
-                      <span class="pd-detail__price">$6.99</span>
+                      <span class="pd-detail__price">{{currency}}6.99</span>
 
-                      <span class="pd-detail__discount">(76% OFF)</span><del class="pd-detail__del">$28.97</del></div>
+                      <span class="pd-detail__discount">(76% OFF)</span><del class="pd-detail__del">{{currency}}28.97</del></div>
                   </div>
                   <div class="u-s-m-b-15">
                     <div class="pd-detail__rating gl-rating-style"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
@@ -273,11 +273,13 @@ export default {
   },
   data(){
     return{
-      products: []
+      products: [],
+      currency:null
     }
   },
   mounted(){
     this.getProducts()
+    this.currency = localStorage.getItem('currency')
   },
   methods: {
     getProducts(){

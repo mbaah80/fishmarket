@@ -56,7 +56,9 @@
                       <div class="product-m__rating gl-rating-style"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i>
 
                         <span class="product-m__review">(23)</span></div>
-                      <div class="product-m__price">${{prod.price}}<span class="product-o__discount">(20% OFF)</span></div>
+                      <div class="product-m__price">
+                        {{ currency }}
+                        {{prod.price}}<span class="product-o__discount">(20% OFF)</span></div>
                       <div class="product-m__hover">
                         <div class="product-m__preview-description">
 
@@ -106,11 +108,13 @@ export default {
   name: "index",
   data() {
     return {
-      products: []
+      products: [],
+      currency: null
     };
   },
   mounted() {
     this.getProducts();
+    this.currency = localStorage.getItem('currency')
   },
   methods: {
     getProducts(){

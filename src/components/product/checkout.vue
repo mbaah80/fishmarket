@@ -516,7 +516,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="o-summary__section u-s-m-b-30">
+                  <div class="o-summary__section u-s-m-b-30" v-if="!user">
                     <div class="o-summary__box">
                       <h1 class="checkout-f__h1">SHIPPING & BILLING</h1>
                       <div class="ship-b">
@@ -622,7 +622,8 @@ export default {
       },
       password: '',
       email: '',
-      acceptTerms: false
+      acceptTerms: false,
+      currency:null
     }
   },
   async mounted() {
@@ -630,17 +631,44 @@ export default {
     this.user = firebase.auth().currentUser;
     this.checkUser();
     this.getBillingAddress()
+    this.currency = localStorage.getItem('currency')
   },
   methods: {
     getCart() {
-      firebase.firestore().collection('cart').get().then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          let product = doc.data();
-          product.id = doc.id;
-          this.cart.push(product);
+      const currentUser = firebase.auth().currentUser;
+
+      if (currentUser) {
+        const userId = currentUser.uid;
+
+        firebase
+          .firestore()
+          .collection('cart')
+          .where('userId', '==', userId)
+          .get()
+          .then((querySnapshot) => {
+            this.cart = [];
+            querySnapshot.forEach((doc) => {
+              let product = doc.data();
+              product.id = doc.id;
+              this.cart.push(product);
+            });
+            this.checkTotal();
+          })
+          .catch((error) => {
+           
+          });
+      } else {
+        // Guest user, retrieve cart from localStorage
+        const guestCart = localStorage.getItem('guestCart');
+
+        if (guestCart) {
+          this.cart = JSON.parse(guestCart);
           this.checkTotal();
-        })
-      })
+          
+        } else {
+          this.cart = [];
+        }
+      }
     },
     minusInput(id) {
       let product = this.cart.find(ct => ct.id === id);
@@ -751,13 +779,12 @@ export default {
           },
           cart: this.cart,
           total: this.total,
-          subtotal: this.subtotal,
           date: new Date(),
           status: 'pending'
         };
 
         const paymentHandler = PaystackPop.setup({
-          key: 'pk_test_c07df425888ad1a56dd525ddac850fa0af1f9697',
+          key: 'sk_live_802e7d4d7849b435bdd2e202bba2fc2d064ee854',
           email: user.email,
           amount: order.total * 100,
           currency: 'GHS',
@@ -767,7 +794,7 @@ export default {
               const paymentRef = firestore.collection('users').doc(user.uid).collection('payments').doc();
               const orderRef = firestore.collection('orders').doc(user.uid);
 
-              firestore.runTransaction((transaction) => {
+              firestore.runTransaction(async(transaction) => {
                 return transaction.get(paymentRef).then((doc) => {
                   if (doc.exists) {
                     throw new Error('Payment already processed.');
@@ -803,8 +830,10 @@ export default {
             }
           },
           onClose: () => {
-            // Handle the payment closed event
-            console.log('Payment closed');
+            this.$notify({
+              text: 'Your payment was not successful, please try again.',
+              type: 'info'
+            });
           }
         });
 

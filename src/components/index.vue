@@ -125,7 +125,7 @@
 
                 <span class="product-o__review">(2)</span></div>
 
-              <span class="product-o__price">${{ product.price }}<span class="product-o__discount">(20% OFF)</span></span>
+              <span class="product-o__price">{{currency}}{{ product.price }}<span class="product-o__discount">(20% OFF)</span></span>
 
             </div>
           </div>
@@ -223,7 +223,7 @@
 
                 <span class="service__info-text-1">Free Shipping</span>
 
-                <span class="service__info-text-2">Free shipping on all US order or order above $200</span></div>
+                <span class="service__info-text-2">Free shipping on all US order or order above {{currency}}200</span></div>
             </div>
           </div>
           <div class="col-lg-4 col-md-6 u-s-m-b-30">
@@ -479,9 +479,9 @@
                 <div>
                   <div class="pd-detail__inline">
 
-                    <span class="pd-detail__price">$6.99</span>
+                    <span class="pd-detail__price">{{currency}}6.99</span>
 
-                    <span class="pd-detail__discount">(76% OFF)</span><del class="pd-detail__del">$28.97</del></div>
+                    <span class="pd-detail__discount">(76% OFF)</span><del class="pd-detail__del">{{currency}}28.97</del></div>
                 </div>
                 <div class="u-s-m-b-15">
                   <div class="pd-detail__rating gl-rating-style"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
@@ -606,7 +606,7 @@
 
                   <span class="success__quantity">Quantity: 1</span>
 
-                  <span class="success__price">$170.00</span></div>
+                  <span class="success__price">{{currency}}170.00</span></div>
               </div>
             </div>
             <div class="col-lg-6 col-md-12">
@@ -689,6 +689,7 @@ export default {
   data(){
     return{
       products: [],
+      currency:null
     }
   },
   methods: {
@@ -710,6 +711,7 @@ export default {
 
   mounted() {
     this.getProducts()
+    this.currency = localStorage.getItem('currency')
     $('.owl-carousel').owlCarousel({
       loop: true,
       margin: 10,

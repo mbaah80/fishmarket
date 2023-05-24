@@ -258,15 +258,41 @@ export default {
 
   },
   methods: {
-    getCart(){
-      firebase.firestore().collection('cart').get().then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          let product = doc.data();
-          product.id = doc.id;
-          this.cart.push(product);
-          this.checkTotal();
-        })
-      })
+    getCart() {
+      const currentUser = firebase.auth().currentUser;
+
+      if (currentUser) {
+        const userId = currentUser.uid;
+
+        firebase
+          .firestore()
+          .collection('cart')
+          .where('userId', '==', userId)
+          .get()
+          .then((querySnapshot) => {
+            this.cart = [];
+            querySnapshot.forEach((doc) => {
+              let product = doc.data();
+              product.id = doc.id;
+              this.cart.push(product);
+            });
+          })
+          .catch((error) => {
+            this.$notify({
+              text: 'Error getting cart',
+              type: 'error'
+            });
+          });
+      } else {
+        // Guest user, retrieve cart from localStorage
+        const guestCart = localStorage.getItem('guestCart');
+
+        if (guestCart) {
+          this.cart = JSON.parse(guestCart);
+        } else {
+          this.cart = [];
+        }
+      }
     },
     checkTotal() {
       this.subtotal = this.cart.reduce((total, product) => {
