@@ -630,7 +630,7 @@ export default {
     this.getCart();
     this.user = firebase.auth().currentUser;
     this.checkUser();
-    this.getBillingAddress()
+    //this.getBillingAddress()
     this.currency = localStorage.getItem('currency')
   },
   methods: {
@@ -784,7 +784,7 @@ export default {
         };
 
         const paymentHandler = PaystackPop.setup({
-          key: 'sk_live_802e7d4d7849b435bdd2e202bba2fc2d064ee854',
+          key: config,
           email: user.email,
           amount: order.total * 100,
           currency: 'GHS',
@@ -815,6 +815,7 @@ export default {
                   type: 'success'
                 });
                 this.clearCart();
+                this.$router.push('/confirmation');
               }).catch((error) => {
                 this.$notify({
                   text: error.message,
@@ -858,59 +859,59 @@ export default {
       }
     },
     saveBillingAddress() {
-      let user = firebase.auth().currentUser;
+  let user = firebase.auth().currentUser;
 
-      const billingInformation = this.billingInformation;
-      const requiredFields = ['firstName', 'lastName', 'phone', 'address', 'city', 'country', 'zip'];
+  const billingInformation = this.billingInformation;
+  const requiredFields = ['firstName', 'lastName', 'phone', 'address', 'city', 'country', 'zip'];
 
-      if (requiredFields.every(field => billingInformation[field])) {
-        if (billingInformation.makeShippingDefaultAddress === true) {
-          firebase.firestore().collection('users').doc(user.uid).update({
-            shippingAddress: billingInformation
-          }).then(() => {
-            this.$notify({
-              text: 'Shipping Address Saved',
-              type: 'success'
-            });
+  if (requiredFields.every(field => billingInformation[field])) {
+    if (billingInformation.makeShippingDefaultAddress === true) {
+      firebase.firestore().collection('users').doc(user.uid).update({
+        shippingAddress: billingInformation
+      }).then(() => {
+        this.$notify({
+          text: 'Shipping Address Saved',
+          type: 'success'
+        });
+      });
+    } else {
+      if (user) {
+        const billingAddress = { ...billingInformation, email: user.email };
+        firebase.firestore().collection('users').doc(user.uid).update({
+          billingAddress: billingAddress
+        }).then(() => {
+          this.$notify({
+            text: 'Billing Address Saved',
+            type: 'success'
           });
-        } else {
-          if (user) {
-            const billingAddress = { ...billingInformation, email: user.email };
+        });
+      } else if (this.password) {
+        firebase.auth().createUserWithEmailAndPassword(billingInformation.email, this.password)
+          .then((user) => {
+            const billingAddress = { ...billingInformation, email: billingInformation.email };
             firebase.firestore().collection('users').doc(user.uid).update({
               billingAddress: billingAddress
             }).then(() => {
               this.$notify({
-                text: 'Billing Address Saved',
+                text: 'Account created successfully. Please complete the order',
                 type: 'success'
               });
             });
-          } else if (this.password) {
-            firebase.auth().createUserWithEmailAndPassword(billingInformation.email, this.password)
-              .then((user) => {
-                const billingAddress = { ...billingInformation, email: billingInformation.email };
-                firebase.firestore().collection('users').doc(user.uid).update({
-                  billingAddress: billingAddress
-                }).then(() => {
-                  this.$notify({
-                    text: 'Account created successfully. Please complete the order',
-                    type: 'success'
-                  });
-                });
-              });
-          } else {
-            this.$notify({
-              text: 'Login to complete the order',
-              type: 'error'
-            });
-          }
-        }
+          });
       } else {
         this.$notify({
-          text: 'Please fill all the fields',
+          text: 'Login to complete the order',
           type: 'error'
         });
       }
-    },
+    }
+  } else {
+    this.$notify({
+      text: 'Please fill all the fields',
+      type: 'error'
+    });
+  }
+},
     getBillingAddress() {
       let user = firebase.auth().currentUser;
       if (user) {

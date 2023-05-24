@@ -83,7 +83,8 @@
 
                   <span class="pd-detail__price"> {{ currency }}{{ product.price }}</span>
 
-                  <span class="pd-detail__discount">(20% OFF)</span><del class="pd-detail__del"> {{ currency }}{{ product.discountPrice
+                  <span class="pd-detail__discount">(20% OFF)</span><del class="pd-detail__del"> {{ currency }}{{
+                    product.discountPrice
                   }}</del>
                 </div>
               </div>
@@ -204,7 +205,7 @@
 
                     <a class="nav-link active" data-toggle="tab" href="#pd-desc">DESCRIPTION</a>
                   </li>
-                 
+
                 </ul>
               </div>
               <div class="tab-content">
@@ -547,7 +548,7 @@
       </div>
     </div>
     <!--====== End - Product Detail Tab ======-->
-    
+
     <!--====== End - Section 1 ======-->
   </div>
 </template>
@@ -564,7 +565,7 @@ export default {
       quantity: 1,
       relatedProducts: [],
       cart: [],
-      currency:null
+      currency: null
     }
   },
   async mounted() {
@@ -624,7 +625,7 @@ export default {
       };
 
       const currentUser = firebase.auth().currentUser;
-
+     
       if (currentUser) {
         // User is logged in, save the product in the cart collection
         const userId = currentUser.uid;
@@ -633,6 +634,7 @@ export default {
           .firestore()
           .collection('cart')
           .where('id', '==', product.id)
+          .where('userId', '==', userId)
           .get()
           .then((querySnapshot) => {
             if (!querySnapshot.empty) {
