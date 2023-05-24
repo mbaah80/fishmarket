@@ -596,7 +596,6 @@
 </template>
 
 <script>
-import config from '../../../config.keys'
 import firebase from 'firebase/app'
 export default {
   name: "checkout",
@@ -784,7 +783,7 @@ export default {
         };
 
         const paymentHandler = PaystackPop.setup({
-          key: config,
+          key: 'sk_live_802e7d4d7849b435bdd2e202bba2fc2d064ee854',
           email: user.email,
           amount: order.total * 100,
           currency: 'GHS',
